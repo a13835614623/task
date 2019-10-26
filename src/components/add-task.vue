@@ -1,35 +1,11 @@
 <template>
-  <mu-dialog v-if="task" title="编辑任务" :open="open" @update:open="updateOpen" scrollable>
+  <mu-dialog title="添加任务" :open="open" @update:open="updateOpen" scrollable>
     <mu-container>
-      <!-- 任务信息 -->
       <mu-row gutter>
         <mu-col span="3">
           <mu-text-field v-model="task.taskName" label-float label="任务名称"></mu-text-field>
         </mu-col>
         <mu-col span="3">
-          <mu-date-input
-            v-model="task.taskPlanFinishDate"
-            label="计划完成时间"
-            label-float
-            full-width
-            no-display
-          ></mu-date-input>
-        </mu-col>
-        <mu-col span="3">
-          <mu-date-input
-            v-model="task.taskFinishDate"
-            label="实际完成时间"
-            label-float
-            full-width
-            no-display
-          ></mu-date-input>
-        </mu-col>
-        <mu-col span="3">
-          <mu-text-field type="number" v-model="task.taskCostTime" label="实际消耗时间(天)" label-float></mu-text-field>
-        </mu-col>
-      </mu-row>
-      <mu-row gutter>
-        <mu-col span="4">
           <mu-select v-model="task.taskOwner" label-float label="负责人">
             <mu-option
               v-for="(user,index) in users"
@@ -39,7 +15,10 @@
             ></mu-option>
           </mu-select>
         </mu-col>
-        <mu-col span="4">
+        <mu-col span="3">
+          <mu-date-input v-model="task.taskPlanFinishDate" label="计划完成时间" label-float no-display></mu-date-input>
+        </mu-col>
+        <mu-col span="3">
           <mu-select v-model="task.taskLevel" label-float label="优先级">
             <mu-option
               v-for="(level,index) in TASK_LEVEL"
@@ -49,53 +28,18 @@
             ></mu-option>
           </mu-select>
         </mu-col>
-        <mu-col span="4">
-          <mu-select
-            v-model="task.taskState"
-            label="状态"
-            @change="parentTaskStateChange"
-            label-float
-            full-width
-          >
-            <mu-option
-              v-for="(state,index) in TASK_STATE"
-              :key="state+index"
-              :label="state"
-              :value="index"
-            ></mu-option>
-          </mu-select>
-        </mu-col>
       </mu-row>
-      <!-- 任务明细操作 -->
-      <mu-row>
-        <mu-col span="10">
-          <mu-sub-header style="padding-left:0px;">任务明细</mu-sub-header>
-        </mu-col>
-        <mu-col span="2" style="text-align:right;">
-          <mu-button
-            color="primary"
-            :disabled="!task.taskDetailList[task.taskDetailList.length-1].taskName"
-            icon
-            @click="addDetail"
-          >
-            <mu-icon value="add"></mu-icon>
-          </mu-button>
-          <mu-button
-            color="secondary"
-            :disabled="task.taskDetailList.length<=1"
-            icon
-            @click="delDetail"
-          >
-            <mu-icon value="remove"></mu-icon>
-          </mu-button>
-        </mu-col>
-      </mu-row>
+      <mu-sub-header style="padding-left:0px;">任务明细</mu-sub-header>
       <!-- 任务明细列表 -->
       <mu-row gutter v-for="(item,index) in task.taskDetailList" :key="index">
         <mu-col span="1">
-          <mu-badge :content="task.taskDetailList[index].taskOrder+''" color="primary" class="row-badge"></mu-badge>
+          <mu-badge
+            :content="task.taskDetailList[index].taskOrder+''"
+            color="primary"
+            class="row-badge"
+          ></mu-badge>
         </mu-col>
-        <mu-col span="3">
+        <mu-col span="5">
           <mu-text-field
             v-model="task.taskDetailList[index].taskName"
             full-width
@@ -113,36 +57,32 @@
           ></mu-date-input>
         </mu-col>
         <mu-col span="2">
-          <mu-date-input
-            v-model="task.taskDetailList[index].taskFinishDate"
-            label="实际完成时间"
-            label-float
-            full-width
-            no-display
-          ></mu-date-input>
-        </mu-col>
-        <mu-col span="2">
-          <mu-select
-            v-model="task.taskDetailList[index].taskState"
-            label="状态"
-            label-float
-            full-width
-          >
-            <mu-option
-              v-for="(state,index) in TASK_STATE"
-              :key="state+index"
-              :label="state"
-              :value="index"
-            ></mu-option>
-          </mu-select>
-        </mu-col>
-        <mu-col span="2">
           <mu-text-field
             v-model="task.taskDetailList[index].taskRemark"
             full-width
             label-float
             label="备注"
           ></mu-text-field>
+        </mu-col>
+        <mu-col span="2" style="text-align:right;" v-if="index==0">
+          <mu-button
+            color="primary"
+            icon
+            :disabled="!task.taskDetailList[task.taskDetailList.length-1].taskName"
+            class="row-inline"
+            @click="addDetail"
+          >
+            <mu-icon value="add"></mu-icon>
+          </mu-button>
+          <mu-button
+            color="secondary"
+            v-if="task.taskDetailList.length>1"
+            icon
+            class="row-inline"
+            @click="delDetail"
+          >
+            <mu-icon value="remove"></mu-icon>
+          </mu-button>
         </mu-col>
       </mu-row>
     </mu-container>
@@ -153,7 +93,14 @@
 
 <script>
 import { TASK_PROP_MAP, TASK_STATE, TASK_LEVEL } from "@/util/const";
-
+var TASK_INIT = {
+  taskName: "",
+  taskLevel: 0,
+  taskState: 0,
+  taskDetailList: [
+    { taskName: "", taskPlanFinishDate: new Date(), taskOrder: 1 }
+  ]
+};
 export default {
   props: {
     open: {
@@ -163,40 +110,21 @@ export default {
     users: {
       type: Array,
       required: true
-    },
-    taskId: {
-      type: String,
-      required: true
     }
   },
   data() {
     return {
-      TASK_LEVEL,
-      TASK_STATE,
-      task: null
+      task: this.$clone(TASK_INIT),
+      TASK_LEVEL
     };
   },
-  async created() {
-    await this.reload();
-  },
-  watch: {
-    open(newValue, oldValue) {
-      newValue && this.reload();
-    }
-  },
   methods: {
-    async reload() {
-      let { data } = await this.$http.post(`task/query`, {
-        task:{taskId: this.taskId}
-      });
-      this.task = data.data[0];
-    },
     addDetail() {
       this.task.taskDetailList.push({
         taskName: "",
         taskState: 0,
         taskRemark: "",
-        taskOrder:this.task.taskDetailList.length+1
+        taskOrder: this.task.taskDetailList.length + 1
       });
     },
     async delDetail() {
@@ -208,7 +136,7 @@ export default {
           data.code == 0 && this.task.taskDetailList.pop();
           return;
         } finally {
-          loading&&loading.close();
+          loading.close();
         }
       } else {
         this.task.taskDetailList.pop();
@@ -231,8 +159,12 @@ export default {
         this.$toast.error("任务名称不能为空!");
         return false;
       }
-      if (this.task.taskCostTime&&parseInt(this.task.taskCostTime) < 0) {
+      if (this.task.taskCostTime && parseInt(this.task.taskCostTime) < 0) {
         this.$toast.error("任务消耗时间不能为负!");
+        return false;
+      }
+      if (!this.task.taskOwner) {
+        this.$toast.error("任务负责人不能为空!");
         return false;
       }
       if (this.task.taskDetailList.last().taskName == "") {
@@ -245,14 +177,15 @@ export default {
       if (!this.validator()) return;
       const loading = this.$loading();
       try {
-        let { data } = await this.$http.post(`task/update`, this.task);
+        let { data } = await this.$http.post(`task/add`, this.task);
         if (data.code == 0) {
           this.$emit("update:open", false);
           this.$emit("flush", null);
-          this.$toast.success("更新成功");
+          this.$toast.success("添加成功");
+          this.task = this.$clone(TASK_INIT);
         }
       } finally {
-        loading.close();
+        loading && loading.close();
       }
     }
   }

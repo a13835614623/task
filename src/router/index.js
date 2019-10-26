@@ -5,8 +5,16 @@ let _import = name => () => import(`@/views/${name}.vue`);
 const routes = [
   {
     path: "/",
-    name: "home",
-    component: _import("index")
+    name: "index",
+    component: _import("index"),
+    redirect: "/task-manage",
+    children: ["task-manage", "user-manage"].map(name => {
+      return {
+        path: name,
+        name: name,
+        component: _import(name)
+      };
+    })
   }
 ];
 

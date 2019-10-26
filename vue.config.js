@@ -22,7 +22,7 @@ module.exports = {
         changeOrigin: true,
         ws: true,
         pathRewrite: {
-          "/api": ""
+          "^/api": ""
         }
       }
     }
@@ -38,10 +38,10 @@ module.exports = {
   // 全局引入scss
   css: {
     loaderOptions: {
-      sass: {
-        // data: `
-        //   @import "@/assets/scss/index.scss";
-        // `
+      scss: {
+        prependData: `
+          @import "@/assets/scss/index.scss";
+        `
       }
     }
   }

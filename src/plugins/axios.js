@@ -1,8 +1,10 @@
 import axios from "axios";
 import Vue from "vue";
 import Toast from "muse-ui-toast";
-
-axios.defaults.baseURL = "/api"; // 配置axios请求的地址
+import Loading from "muse-ui-loading";
+var loading;
+const isProduction = process.env.NODE_ENV === "production";
+!isProduction && (axios.defaults.baseURL = "/api"); // 配置axios请求的地址
 axios.interceptors.request.use(
   config => {
     return config;
@@ -13,11 +15,11 @@ axios.interceptors.request.use(
 );
 axios.interceptors.response.use(
   res => {
-    let map = { "0": "success", "-1": "error" };
-    Toast[map[res.data.code + ""]](res.data.msg);
+    res.data.code == -1 && Toast.error(res.data.msg);
     return res;
   },
   error => {
+    Toast.error("网络异常,请检查网络");
     console.error(error);
   }
 );

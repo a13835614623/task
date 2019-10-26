@@ -18,6 +18,7 @@ import {
   Progress,
   Tabs,
   List,
+  Drawer,
   TextField,
   Chip,
   Divider,
@@ -25,6 +26,7 @@ import {
   Dialog,
   Paper,
   Snackbar,
+  Pagination,
   Grid,
   Icon,
   Stepper,
@@ -41,6 +43,7 @@ Vue.use(Badge);
 Vue.use(LoadMore);
 Vue.use(DateInput);
 Vue.use(Switch);
+Vue.use(Drawer);
 Vue.use(Form);
 Vue.use(BottomNav);
 Vue.use(Select);
@@ -52,6 +55,7 @@ Vue.use(Dialog);
 Vue.use(List);
 Vue.use(Snackbar);
 Vue.use(AppBar);
+Vue.use(Pagination);
 Vue.use(Chip);
 Vue.use(Button);
 Vue.use(TextField);

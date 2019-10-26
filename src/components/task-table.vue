@@ -8,27 +8,39 @@
       :data="list"
     >
       <template slot-scope="{ row,$index }">
-        <td class="table-row">{{$index+1}}</td>
+        <td class="table-row">{{start+$index+1}}</td>
         <td
           v-for="(label,propName) in TASK_PROP_MAP"
           :key="propName"
           class="table-row"
         >{{format(row[propName],propName)}}</td>
         <td>
-          <mu-button icon color="primary" @click="edit(row.parentTask)">
+          <mu-button icon color="primary" @click="edit(row)">
             <mu-icon value="edit"></mu-icon>
           </mu-button>
-          <mu-button icon color="secondary">
+          <mu-button icon color="secondary" @click="del(row)">
             <mu-icon value="delete"></mu-icon>
           </mu-button>
         </td>
       </template>
     </mu-data-table>
-    <edit-task v-if="parentTask" :open.sync="open" :users="users" :parent-task="parentTask" />
+    <!-- 编辑任务对话框 -->
+    <edit-task
+      v-if="editTask.taskId"
+      @flush="$emit('flush',null)"
+      :open.sync="editOpen"
+      :users="users"
+      :task-id="editTask.taskId"
+    />
   </div>
 </template>
 <script>
-import { TASK_PROP_MAP, TASK_STATE, TASK_LEVEL } from "@/util/const";
+import {
+  TASK_PROP_MAP,
+  TASK_STATE,
+  TASK_LEVEL,
+  TASK_DETAIL_PROP_MAP
+} from "@/util/const";
 import editTask from "./edit-task";
 export default {
   props: {
@@ -38,6 +50,10 @@ export default {
     },
     users: {
       type: Array,
+      required: true
+    },
+    start: {
+      type: Number,
       required: true
     }
   },
@@ -49,16 +65,16 @@ export default {
       return {
         title: TASK_PROP_MAP[v],
         name: v,
-        align: "center"
+        align: "center",
+        sortable: true,
       };
     });
     columns.unshift({
       title: "序号",
-      align: "center"
+      align: "center",
     });
     columns.push({
       title: "操作"
-      // width:100
     });
     return {
       sort: {
@@ -66,26 +82,19 @@ export default {
         order: "asc"
       },
       columns,
-      open: false,
+      editOpen: false,
       TASK_PROP_MAP,
       TASK_STATE,
       TASK_LEVEL,
-      parentTask: ""
+      TASK_DETAIL_PROP_MAP,
+      editTask: {},
+      taskDetailList: []
     };
   },
   methods: {
     handleSortChange({ name, order }) {
       this.list = this.list.sort((a, b) =>
         order === "asc" ? a[name] - b[name] : b[name] - a[name]
-      );
-    },
-    getCostDate(task) {
-      if (!task || !task.taskFinishDate || !task.taskPlanFinishDate) return 0;
-      return (
-        (task.taskPlanFinishDate.getTime() - task.taskFinishDate.getTime()) /
-        60 /
-        60 /
-        24
       );
     },
     format(v, propName) {
@@ -98,9 +107,26 @@ export default {
       }
       return v;
     },
-    edit(parentTask) {
-      this.parentTask = parentTask;
-      this.open = true;
+    edit(task) {
+      this.editTask = task;
+      this.editOpen = true;
+    },
+    del(task) {
+      this.$confirm("确定要删除此任务吗？", "提示", {
+        type: "warning"
+      }).then(async ({ result }) => {
+        if (result) {
+          let { data } = await this.$http.get(`task/del?taskId=${task.taskId}`);
+          if (data.code == 0) {
+            this.$toast.success("删除成功");
+            this.$emit("flush", null);
+          }
+        }
+      });
+    },
+    async getTaskDetail() {
+      let { data } = await this.$http.post(`task/query`);
+      this.taskDetailList = data.data;
     }
   }
 };
@@ -108,13 +134,6 @@ export default {
 
 <style lang="scss" scoped>
 .task-table {
-  min-width: 1450px;
-  margin: 0 auto;
-  .table-row {
-    text-align: center;
-  }
-  .mu-table td {
-    padding: 10px;
-  }
+  padding: 0;
 }
 </style>
