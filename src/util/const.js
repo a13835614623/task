@@ -22,8 +22,8 @@ const TASK_LEVEL = ["低", "中", "高"];
 const USER_PROP_MAP = {
   userName: "用户名称",
   userTaskCount: "任务总数",
-  unFinishedTaskCount: "已完成任务数",
-  finishedTaskCount: "未完成任务数",
+  unFinishedTaskCount: "未完成任务数",
+  finishedTaskCount: "已完成任务数",
   hangTaskCount: "挂起任务数"
 };
 export {
