@@ -1,71 +1,80 @@
 <template>
-  <mu-dialog v-if="task" title="编辑任务" :open="open" @update:open="updateOpen" scrollable>
+  <mu-dialog v-if="task" title :open="open" @update:open="updateOpen" scrollable>
     <mu-container>
       <!-- 任务信息 -->
-      <mu-row gutter>
-        <mu-col span="3">
-          <mu-text-field v-model="task.taskName" label-float label="任务名称"></mu-text-field>
-        </mu-col>
-        <mu-col span="3">
-          <mu-date-input
-            v-model="task.taskPlanFinishDate"
-            label="计划完成时间"
-            label-float
-            full-width
-            no-display
-          ></mu-date-input>
-        </mu-col>
-        <mu-col span="3">
-          <mu-date-input
-            v-model="task.taskFinishDate"
-            label="实际完成时间"
-            label-float
-            full-width
-            no-display
-          ></mu-date-input>
-        </mu-col>
-        <mu-col span="3">
-          <mu-text-field type="number" v-model="task.taskCostTime" label="实际消耗时间(天)" label-float></mu-text-field>
-        </mu-col>
-      </mu-row>
-      <mu-row gutter>
-        <mu-col span="4">
-          <mu-select v-model="task.taskOwner" label-float label="负责人">
-            <mu-option
-              v-for="(user,index) in users"
-              :key="user.userId+index"
-              :label="user.userName"
-              :value="user.userId"
-            ></mu-option>
-          </mu-select>
-        </mu-col>
-        <mu-col span="4">
-          <mu-select v-model="task.taskLevel" label-float label="优先级">
-            <mu-option
-              v-for="(level,index) in TASK_LEVEL"
-              :key="level+index"
-              :label="level"
-              :value="index"
-            ></mu-option>
-          </mu-select>
-        </mu-col>
-        <mu-col span="4">
-          <mu-select
-            v-model="task.taskState"
-            label="状态"
-            @change="parentTaskStateChange"
-            label-float
-            full-width
-          >
-            <mu-option
-              v-for="(state,index) in TASK_STATE"
-              :key="state+index"
-              :label="state"
-              :value="index"
-            ></mu-option>
-          </mu-select>
-        </mu-col>
-      </mu-row>
+      <mu-expansion-panel :z-depth="0">
+        <h5 slot="header">{{task.taskName}}</h5>
+        <mu-row gutter>
+          <mu-col span="3">
+            <mu-text-field v-model="task.taskName" full-width label-float label="任务名称"></mu-text-field>
+          </mu-col>
+          <mu-col span="3">
+            <mu-date-input
+              v-model="task.taskPlanFinishDate"
+              label="计划完成时间"
+              label-float
+              full-width
+              no-display
+            ></mu-date-input>
+          </mu-col>
+          <mu-col span="3">
+            <mu-date-input
+              v-model="task.taskFinishDate"
+              label="实际完成时间"
+              full-width
+              label-float
+              no-display
+            ></mu-date-input>
+          </mu-col>
+          <mu-col span="3">
+            <mu-text-field
+              full-width
+              type="number"
+              v-model="task.taskCostTime"
+              label="实际消耗时间(天)"
+              label-float
+            ></mu-text-field>
+          </mu-col>
+        </mu-row>
+        <mu-row gutter>
+          <mu-col span="4">
+            <mu-select v-model="task.taskOwner" full-width label-float label="负责人">
+              <mu-option
+                v-for="(user,index) in users"
+                :key="user.userId+index"
+                :label="user.userName"
+                :value="user.userId"
+              ></mu-option>
+            </mu-select>
+          </mu-col>
+          <mu-col span="4">
+            <mu-select v-model="task.taskLevel" full-width label-float label="优先级">
+              <mu-option
+                v-for="(level,index) in TASK_LEVEL"
+                :key="level+index"
+                :label="level"
+                :value="index"
+              ></mu-option>
+            </mu-select>
+          </mu-col>
+          <mu-col span="4">
+            <mu-select
+              v-model="task.taskState"
+              label="状态"
+              @change="parentTaskStateChange"
+              label-float
+              full-width
+            >
+              <mu-option
+                v-for="(state,index) in TASK_STATE"
+                :key="state+index"
+                :label="state"
+                :value="index"
+              ></mu-option>
+            </mu-select>
+          </mu-col>
+        </mu-row>
+      </mu-expansion-panel>
       <!-- 任务明细操作 -->
       <mu-row>
         <mu-col span="10">
@@ -93,7 +102,11 @@
       <!-- 任务明细列表 -->
       <mu-row gutter v-for="(item,index) in task.taskDetailList" :key="index">
         <mu-col span="1">
-          <mu-badge :content="task.taskDetailList[index].taskOrder+''" color="primary" class="row-badge"></mu-badge>
+          <mu-badge
+            :content="task.taskDetailList[index].taskOrder+''"
+            color="primary"
+            class="row-badge"
+          ></mu-badge>
         </mu-col>
         <mu-col span="3">
           <mu-text-field
@@ -187,7 +200,7 @@ export default {
   methods: {
     async reload() {
       let { data } = await this.$http.post(`task/query`, {
-        task:{taskId: this.taskId}
+        task: { taskId: this.taskId }
       });
       this.task = data.data[0];
     },
@@ -196,7 +209,7 @@ export default {
         taskName: "",
         taskState: 0,
         taskRemark: "",
-        taskOrder:this.task.taskDetailList.length+1
+        taskOrder: this.task.taskDetailList.length + 1
       });
     },
     async delDetail() {
@@ -208,7 +221,7 @@ export default {
           data.code == 0 && this.task.taskDetailList.pop();
           return;
         } finally {
-          loading&&loading.close();
+          loading && loading.close();
         }
       } else {
         this.task.taskDetailList.pop();
@@ -231,7 +244,7 @@ export default {
         this.$toast.error("任务名称不能为空!");
         return false;
       }
-      if (this.task.taskCostTime&&parseInt(this.task.taskCostTime) < 0) {
+      if (this.task.taskCostTime && parseInt(this.task.taskCostTime) < 0) {
         this.$toast.error("任务消耗时间不能为负!");
         return false;
       }

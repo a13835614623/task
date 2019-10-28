@@ -30,6 +30,7 @@ import {
   Grid,
   Icon,
   Stepper,
+  ExpansionPanel,
   SubHeader,
   DateInput,
   LoadMore,
@@ -41,6 +42,7 @@ import "muse-ui/lib/styles/theme.less";
 import * as colors from "muse-ui/lib/theme/colors";
 Vue.use(Badge);
 Vue.use(LoadMore);
+Vue.use(ExpansionPanel);
 Vue.use(DateInput);
 Vue.use(Switch);
 Vue.use(Drawer);

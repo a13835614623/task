@@ -98,7 +98,7 @@ var TASK_INIT = {
   taskLevel: 0,
   taskState: 0,
   taskDetailList: [
-    { taskName: "", taskPlanFinishDate: new Date(), taskOrder: 1 }
+    { taskName: "", taskOrder: 1 }
   ]
 };
 export default {

@@ -94,9 +94,11 @@ export default {
         type: "warning"
       }).then(async ({ result }) => {
         if (result) {
-          let {data} = await this.$http.get(`user/del?userId=${row.userId}`);
-          if(data.code==0)
-          this.$toast.success(data.msg);
+          let { data } = await this.$http.get(`user/del?userId=${row.userId}`);
+          if (data.code == 0) {
+            this.$toast.success(data.msg);
+            this.getUserList();
+          }
         }
       });
     },
@@ -111,10 +113,13 @@ export default {
       }).then(async ({ result, value }) => {
         if (result) {
           try {
-            await this.$http.get(`user/add?userName=${value}`);
-            this.$toast.success('添加成功');
+            let { data } = await this.$http.get(`user/add?userName=${value}`);
+            if (data.code == 0) {
+              this.$toast.success(data.msg);
+              this.getUserList();
+            }
           } catch (error) {
-            console.log(error)
+            console.log(error);
           }
         }
       });
@@ -132,7 +137,7 @@ export default {
   .user-table {
     width: 100%;
   }
-  .mu-button{
+  .mu-button {
     margin-left: 20px;
   }
 }
