@@ -66,12 +66,12 @@ export default {
         title: TASK_PROP_MAP[v],
         name: v,
         align: "center",
-        sortable: true,
+        sortable: true
       };
     });
     columns.unshift({
       title: "序号",
-      align: "center",
+      align: "center"
     });
     columns.push({
       title: "操作"
@@ -93,9 +93,14 @@ export default {
   },
   methods: {
     handleSortChange({ name, order }) {
-      this.list = this.list.sort((a, b) =>
-        order === "asc" ? a[name] - b[name] : b[name] - a[name]
-      );
+      this.list = this.list.sort((a, b) => {
+        if (typeof a[name] == 'string')
+          return order === "asc"
+            ? a[name].localeCompare(b[name])
+            : b[name].localeCompare(a[name]);
+        else 
+          return order === "asc" ? a[name] - b[name] : b[name] - a[name]
+      });
     },
     format(v, propName) {
       if (propName == "taskFinishDate" || propName == "taskPlanFinishDate") {

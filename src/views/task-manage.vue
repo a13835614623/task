@@ -139,8 +139,8 @@ export default {
       TASK_LEVEL,
       addOpen: false,
       curPage: 1,
-      pageSize: 10,
-      total: 10
+      pageSize: 20,
+      total: 20
     };
   },
   components: {
@@ -197,7 +197,7 @@ export default {
           this.total = data.count;
         }
       } finally {
-        loading.close();
+        loading&&loading.close();
       }
     },
     async getUserList() {

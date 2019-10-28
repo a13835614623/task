@@ -1,5 +1,5 @@
 <template>
-  <mu-dialog v-if="task" title :open="open" @update:open="updateOpen" scrollable>
+  <mu-dialog title :open="open" @update:open="updateOpen" scrollable>
     <mu-container>
       <!-- 任务信息 -->
       <mu-expansion-panel :z-depth="0">
@@ -199,10 +199,17 @@ export default {
   },
   methods: {
     async reload() {
-      let { data } = await this.$http.post(`task/query`, {
-        task: { taskId: this.taskId }
-      });
-      this.task = data.data[0];
+      let loading = this.$loading();
+      try {
+        let { data } = await this.$http.post(`task/query`, {
+          task: { taskId: this.taskId }
+        });
+        if (data.code == 0) {
+          this.task = data.data[0];
+        }
+      } finally {
+        loading&&loading.close();
+      }
     },
     addDetail() {
       this.task.taskDetailList.push({
@@ -273,9 +280,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.mu-expansion-panel-header{
-  padding: 0 !important;
-}
 .row-badge {
   padding-top: 35px;
 }
