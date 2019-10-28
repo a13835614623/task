@@ -2,7 +2,7 @@ const isProduction = process.env.NODE_ENV === "production";
 // 开发环境
 let dev_url = "http://127.0.0.1:9527";
 // 生产环境
-let prod_url = "http://127.0.0.1:9528";
+let prod_url = "http://127.0.0.1";
 // 目标url
 let target = isProduction ? prod_url : dev_url;
 module.exports = {
