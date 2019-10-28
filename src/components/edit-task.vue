@@ -273,6 +273,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.mu-expansion-panel-header{
+  padding: 0 !important;
+}
 .row-badge {
   padding-top: 35px;
 }
