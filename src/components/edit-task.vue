@@ -100,43 +100,43 @@
         </mu-col>
       </mu-row>
       <!-- 任务明细列表 -->
-      <mu-row gutter v-for="(item,index) in task.taskDetailList" :key="index">
-        <mu-col span="1">
+      <mu-flex
+        v-for="(item,index) in task.taskDetailList"
+        :key="index"
+        inline
+        justify-content="around"
+      >
+        <mu-flex class="flex-item">
           <mu-badge
             :content="task.taskDetailList[index].taskOrder+''"
             color="primary"
             class="row-badge"
           ></mu-badge>
-        </mu-col>
-        <mu-col span="3">
-          <mu-text-field
-            v-model="task.taskDetailList[index].taskName"
-            full-width
-            label-float
-            label="任务明细"
-          ></mu-text-field>
-        </mu-col>
-        <mu-col span="2">
+          <mu-text-field v-model="task.taskDetailList[index].taskName" label-float label="任务明细"></mu-text-field>
+        </mu-flex>
+        <mu-flex class="flex-item">
           <mu-date-input
+            style="width:120px;"
             v-model="task.taskDetailList[index].taskPlanFinishDate"
             label="计划完成时间"
             label-float
-            full-width
             no-display
           ></mu-date-input>
-        </mu-col>
-        <mu-col span="2">
+        </mu-flex>
+        <mu-flex class="flex-item">
           <mu-date-input
+            style="width:120px;"
             v-model="task.taskDetailList[index].taskFinishDate"
             label="实际完成时间"
             label-float
             full-width
             no-display
           ></mu-date-input>
-        </mu-col>
-        <mu-col span="2">
+        </mu-flex>
+        <mu-flex class="flex-item">
           <mu-select
             v-model="task.taskDetailList[index].taskState"
+            style="width:90px;"
             label="状态"
             label-float
             full-width
@@ -148,16 +148,11 @@
               :value="index"
             ></mu-option>
           </mu-select>
-        </mu-col>
-        <mu-col span="2">
-          <mu-text-field
-            v-model="task.taskDetailList[index].taskRemark"
-            full-width
-            label-float
-            label="备注"
-          ></mu-text-field>
-        </mu-col>
-      </mu-row>
+        </mu-flex>
+        <mu-flex class="flex-item" fill>
+          <mu-text-field v-model="task.taskDetailList[index].taskRemark" label-float label="备注"></mu-text-field>
+        </mu-flex>
+      </mu-flex>
     </mu-container>
     <mu-button slot="actions" flat color="primary" @click="submit">提交</mu-button>
     <mu-button slot="actions" flat color="primary" @click="close">关闭</mu-button>
@@ -208,7 +203,7 @@ export default {
           this.task = data.data[0];
         }
       } finally {
-        loading&&loading.close();
+        loading && loading.close();
       }
     },
     addDetail() {
@@ -282,6 +277,10 @@ export default {
 <style lang="scss" scoped>
 .row-badge {
   padding-top: 35px;
+  padding-right: 10px;
+}
+.flex-item{
+  padding-left: 5px;
 }
 .row-inline {
   margin-top: 25px;
