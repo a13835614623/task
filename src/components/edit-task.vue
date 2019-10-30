@@ -103,6 +103,7 @@
       <mu-flex
         v-for="(item,index) in task.taskDetailList"
         :key="index"
+        style="width:100%;"
         inline
         justify-content="around"
       >
@@ -137,6 +138,7 @@
           <mu-select
             v-model="task.taskDetailList[index].taskState"
             style="width:90px;"
+            @change="taskDetailStateChange"
             label="状态"
             label-float
             full-width
@@ -150,7 +152,7 @@
           </mu-select>
         </mu-flex>
         <mu-flex class="flex-item" fill>
-          <mu-text-field v-model="task.taskDetailList[index].taskRemark" label-float label="备注"></mu-text-field>
+          <mu-text-field v-model="task.taskDetailList[index].taskRemark" full-width label-float label="备注"></mu-text-field>
         </mu-flex>
       </mu-flex>
     </mu-container>
@@ -236,10 +238,22 @@ export default {
       this.$emit("update:open", open);
     },
     parentTaskStateChange(value) {
-      if (TASK_STATE[value] == "完成")
+      if (value == 1 || value == 2)
         this.task.taskDetailList.map((t, index, arr) => {
           arr[index].taskState = value;
         });
+    },
+    taskDetailStateChange(value) {
+      let states = [0, 0, 0];
+      this.task.taskDetailList.map(td => {
+        states[td.taskState]++;
+      });
+      let length = this.task.taskDetailList.length;
+      states.map((s,i)=>{
+        if(s==length)this.task.taskState=i;
+      })
+      if(states[0]>0)this.task.taskState=0;
+      console.log(this.task.taskState)
     },
     validator() {
       if (this.task.taskName == "") {
@@ -279,7 +293,7 @@ export default {
   padding-top: 35px;
   padding-right: 10px;
 }
-.flex-item{
+.flex-item {
   padding-left: 5px;
 }
 .row-inline {
