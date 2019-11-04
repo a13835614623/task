@@ -173,7 +173,7 @@ export default {
     },
     preQuery() {
       Object.keys(this.query.task).map(key => {
-        this.query.task[key] == -1 && delete this.query[key];
+        parseInt(this.query.task[key]) == -1 && delete this.query.task[key];
       });
       this.formatDateQuery();
     },
