@@ -131,7 +131,7 @@ export default {
     },
     async getTaskDetail() {
       let { data } = await this.$http.post(`task/query`);
-      this.taskDetailList = data.data;
+      this.taskDetailList.push(...data.data);
     }
   }
 };
