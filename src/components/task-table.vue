@@ -6,6 +6,7 @@
       class="table"
       @sort-change="handleSortChange"
       :data="list"
+      @row-click="rowClick"
     >
       <template slot-scope="{ row,$index }">
         <td class="table-row">{{start+$index+1}}</td>
@@ -94,12 +95,11 @@ export default {
   methods: {
     handleSortChange({ name, order }) {
       this.list = this.list.sort((a, b) => {
-        if (typeof a[name] == 'string')
+        if (typeof a[name] == "string")
           return order === "asc"
             ? a[name].localeCompare(b[name])
             : b[name].localeCompare(a[name]);
-        else 
-          return order === "asc" ? a[name] - b[name] : b[name] - a[name]
+        else return order === "asc" ? a[name] - b[name] : b[name] - a[name];
       });
     },
     format(v, propName) {
@@ -132,6 +132,10 @@ export default {
     async getTaskDetail() {
       let { data } = await this.$http.post(`task/query`);
       this.taskDetailList.push(...data.data);
+    },
+    rowClick(index, row, event) {
+      this.editTask = row;
+      this.editOpen = true;
     }
   }
 };
