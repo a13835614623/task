@@ -4,7 +4,7 @@
     <div>
       <mu-flex justify-content="center" align-items="center">
         <mu-flex align-items="center">
-          <mu-text-field v-model="query.taskName" label="用户名" label-float></mu-text-field>
+          <mu-text-field v-model="query.userName" label="用户名" label-float></mu-text-field>
           <mu-button color="primary" @click="getUserList">
             查询用户
             <mu-icon value="search" />
@@ -69,7 +69,7 @@ export default {
   },
   methods: {
     async getUserList() {
-      let { data } = await this.$http.get(`/user/query/detail`, this.query);
+      let { data } = await this.$http.post(`/user/query/detail`, this.query);
       let countArr = [
         "unFinishedTaskCount",
         "finishedTaskCount",
