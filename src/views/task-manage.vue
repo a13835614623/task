@@ -87,7 +87,7 @@
         </mu-flex>
       </mu-flex>
       <div class="text-center buttons">
-        <mu-button color="primary" @click="getTaskList">
+        <mu-button color="primary" @click="queryTaskList">
           查询任务
           <mu-icon right value="search" />
         </mu-button>
@@ -176,6 +176,10 @@ export default {
         parseInt(this.query.task[key]) == -1 && delete this.query.task[key];
       });
       this.formatDateQuery();
+    },
+    queryTaskList(){
+      this.curPage=1;
+      this.getTaskList();
     },
     changePage() {
       this.getTaskList();
