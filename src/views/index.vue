@@ -19,15 +19,15 @@
           <mu-list-item-action>
             <mu-icon :value="menu.icon"></mu-icon>
           </mu-list-item-action>
-          <mu-list-item-title>{{menu.title}}</mu-list-item-title>
+          <mu-list-item-title>{{ menu.title }}</mu-list-item-title>
         </mu-list-item>
       </mu-list>
     </mu-drawer>
-    <div :class="open?'app-open':''">
+    <div :class="open ? 'app-open' : ''">
       <mu-appbar color="primary">
-        <mu-button icon slot="left" @click="open=!open">
-          <mu-icon value="menu"></mu-icon>
-        </mu-button>TASK
+        <mu-button icon slot="left" @click="open = !open">
+          <mu-icon value="menu"></mu-icon> </mu-button
+        >TASK MANAGE
       </mu-appbar>
       <router-view />
     </div>
@@ -39,7 +39,7 @@ export default {
   name: "index",
   data() {
     return {
-      open: false,
+      open: true,
       menus: [
         {
           title: "任务管理",
